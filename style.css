@@ -51,6 +51,16 @@ ul{
     display: block
   }
 
-h3.cen{
-    position: center;
-}
+  #myUL li a:hover:not(.header) {
+    background-color: #00463b; /* Add a hover effect to all links, except for headers */
+    color: #f6f6f6;
+  }
+
+  #text-middle{
+    margin-top: 50px;
+    padding-left: 25px;
+  }
+
+  ion-icon {
+    color: #00463b !important;
+  }

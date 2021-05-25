@@ -12,6 +12,8 @@
 
     <link href="./style.css" rel="stylesheet" />
 
+    <script src="https://unpkg.com/ionicons@5.5.1/dist/ionicons.js"></script>
+
     <title>Sismos en NCA</title>
 </head>
 
@@ -29,10 +31,14 @@
                 <!-- Blog entries-->
                 <div class="col-lg-8">
                     <!-- Featured blog post-->
-                    <div class="card mb-4 bg-dark text-white">
-                        <img src="./Assets/topographic-map-background-concept/3997135.jpg" class="card-img" alt="...">
-                        <div class="card-img-overlay">
-                            <h3 class="cen">Card title</h5>
+                    <div class="container-fluid">
+                        <div class="card mb-4 bg-dark text-white">
+                            <img src="./Assets/topographic-map-background-concept/3997135.jpg" class="card-img"
+                                alt="...">
+                            <div class="card-img-overlay ">
+                                <h3 id="text-middle">Sismos registrados en Nicaragua desde el 2015 hasta la actualidad
+                                    </h5>
+                            </div>
                         </div>
                     </div>
 
@@ -75,8 +81,22 @@
 
                         <div class="card mb-2">
                             <div class="card-body" id="2019">
-                                <h4>Sismos 2019</h4>
-                                This is some text within a card body.
+                                <h4 data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom">Sismos 2019
+                                </h4>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Sismos Registrados en el 2015 <span
+                                            class="badge badge-primary badge-pill">14</span></li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Sismos de Registrados en el 2015 <span
+                                            class="badge badge-primary badge-pill">14</span></li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Sismos Registrados en el 2015 <span
+                                            class="badge badge-primary badge-pill">14</span></li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Sismos Registrados en el 2015 <span
+                                            class="badge badge-primary badge-pill">14</span></li>
+                                </ul>
                             </div>
                         </div>
 
@@ -97,7 +117,21 @@
                         <div class="card mb-2">
                             <div class="card-body" id="cat">
                                 <h4>Catalogo de Metadatos</h4>
-                                This is some text within a card body.
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Metadatos de los Sismos Registrados en el 2015 <span>
+                                            <ion-icon name="arrow-down-outline"></ion-icon>
+                                        </span></li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Sismos de Registrados en el 2015 <span
+                                            class="badge badge-primary badge-pill">14</span></li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Sismos Registrados en el 2015 <span
+                                            class="badge badge-primary badge-pill">14</span></li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Sismos Registrados en el 2015 <span
+                                            class="badge badge-primary badge-pill">14</span></li>
+                                </ul>
                             </div>
                         </div>
 
@@ -143,7 +177,9 @@
             </div>
         </div>
     </footer>
-    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- ionicons -->
+    <script src="https://unpkg.com/ionicons@5.5.1/dist/ionicons.js"></script>
 
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
