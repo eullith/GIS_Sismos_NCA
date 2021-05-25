@@ -1,0 +1,53 @@
+:root {
+    --dark: #0a1931;
+    --light: #185adb;
+    --white: #FFFF;
+    --layer: #ffc947;
+    --green: #00463b;
+}
+
+.dark {
+    background-color: var(--dark) !important;
+}
+
+.light {
+    background-color: var(--light) !important;
+}
+
+.white {
+    background-color: var(--white) !important;
+}
+
+.layer {
+    background-color: var(--layer) !important;
+}
+
+.olive {
+    background-color: var(--green) !important;
+}
+
+body{
+    font-family:  'Roboto', sans-serif;
+}
+
+ul{
+    list-style: none;
+}
+
+#myUL {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  #myUL li a {
+    border: 1px solid #ddd;
+    margin-top: -1px; /* Prevent double borders */
+    background-color: #f6f6f6;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 18px;
+    color: black;
+    display: block
+  }
+
