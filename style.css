@@ -61,6 +61,10 @@ ul{
     padding-left: 25px;
   }
 
-  ion-icon {
-    color: #00463b !important;
+  .view{
+      color: #00463b;
+  }
+
+  .view:hover{
+    color: #00463b;
   }
