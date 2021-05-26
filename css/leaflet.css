@@ -653,6 +653,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
 	
 	.light {
 		background-color: var(--light) !important;
+		color: #ffc947;
 	}
 	
 	.white {
@@ -709,3 +710,42 @@ svg.leaflet-image-layer.leaflet-interactive path {
 	  .view:hover{
 		color: #00463b;
 	  }
+
+/*Sidebar*/
+#wrapper {
+	padding-left: 0;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+  }
+ 
+  
+  #sidebar-wrapper {
+	z-index: 1000;
+	position: fixed;
+	right: 250px;
+	width: 0;
+	height: 100%;
+	margin-right: -250px;
+	overflow-y: auto;
+	background-color: transparent;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+  }
+  
+  #wrapper.toggled #sidebar-wrapper {
+	width: 250px;
+  }
+  .button{
+	  color: var(--layer);
+	  background-color: var(--green);
+	  outline-width: 0px;
+  }
+
+  .button:hover{
+	  background-color: var(--layer);
+	  outline-width: 0px;
+  }
