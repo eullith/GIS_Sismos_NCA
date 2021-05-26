@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--Leaflet-->
+    <link rel="stylesheet" href="css/leaflet.css">
+    <link rel="stylesheet" href="css/leaflet-panel-layers.min.css">
+    <link rel="stylesheet" href="css/leaflet.groupedlayercontrol.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <link href="./style.css" rel="stylesheet" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+
+    <title>Visor de Mapas</title>
+</head>
+
+<body>
+
+    <style>
+        #map {
+            width: 100%;
+            height: 800px;
+        }
+
+        #content {
+            position: relative;
+            overflow-y: auto;
+            max-height: 400px;
+            padding: 15px;
+            height: 600px;
+            width: 1000px;
+        }
+
+        .modal-dialog {
+            margin: 2.5vh auto;
+        }
+
+        .modal-body {
+            position: relative;
+            overflow-y: auto;
+            max-height: 400px;
+            padding: 15px;
+        }
+    </style>
+
+    <div id="map">
+
+    </div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog" style="display: table;">
+            <!-- Modal content-->
+            <div class="modal-content" style="display: table;">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div id="content" class="modal-body">
+                    <!-- Mapa -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="js/leaflet.js"></script>
+    <script src="js/leaflet.js.map"></script>
+    <script src="js/leaflet-src.esm.js"></script>
+    <script src="js/leaflet-src.esm.js.map"></script>
+    <script src="js/leaflet-src.js"></script>
+    <script src="js/leaflet-src.js.map"></script>
+    <script src="js/leaflet-providers.js"></script>
+    <script src="js/L.TileLayer.BetterWMS.js"></script>
+    <script src="js/leaflet-panel-layers.min.js"></script>
+    <script src="js/leaflet.groupedlayercontrol.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
+    <script>
+
+        var map = L.map('map').setView([12.887, -85.40], 8);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        //Definición de mapas base
+        var terreno_osm = L.tileLayer.provider('Stamen.TerrainBackground', { maxZoom: 11 });
+        var osm_completo = L.tileLayer.provider('OpenStreetMap.Mapnik', { maxZoom: 11 });
+        var satelite_esri = L.tileLayer.provider('Esri.WorldImagery', { maxZoom: 11 });
+
+        //Definición de servicios
+        var url = "http://localhost:8082/geoserver/ows?";
+
+        //Capas
+        var coropleta = L.tileLayer.betterWms(url, { layers: 'b166:coropleta', transparent: true, visible: true, format: 'image/png', maxZoom: 14 });
+        var atm = L.tileLayer.betterWms(url, { layers: 'b166:atm', transparent: true, visible: true, format: 'image/png', maxZoom: 14 });
+
+        //Lista de mapas base
+        var baseLayers = [
+            {
+                group: "Mapas Base",
+                collapsed: true,
+                layers:
+                    [
+                        {
+                            name: "Completo (OSM)",
+                            layer: osm_completo
+                        },
+                        {
+                            name: "Satelite ESRI",
+                            layer: satelite_esri
+                        },
+                        {
+                            name: "Terreno (OSM)",
+                            layer: terreno_osm
+                        }
+                    ]
+            }
+        ];
+
+        //Lista de capas
+        var overLayers =
+            [
+                {
+                    group: "Capas",
+                    collapsed: true,
+                    layers:
+                        [
+                            {
+                                name: "Censo Masculino",
+                                layer: coropleta
+                            },
+                            {
+                                name: "ATM",
+                                layer: atm
+                            }
+                        ]
+                }
+            ];
+
+        var panelLayers = new L.Control.PanelLayers(baseLayers, overLayers,
+            {
+                collapsibleGroups: true,
+                collapsed: true
+            });
+
+        map.addControl(panelLayers);
+
+        //Busqueda
+        var controlSearch = new.L.Control.Search({
+            position: 'bottomright',
+            layer: markerLayer,
+            
+            marker: false
+        });
+
+        map.addControl(controlSearch);
+
+        //Definición de markers
+        var myFeatureGroup = L.featureGroup().addTo(map).on("click", groupClick);
+        var marker, dep;
+
+        //Orden: Managua, Masaya, Granada, Rivas, Boaco, Matagalpa, Chontales, Nueva Segovia
+        //Chinandega, Esteli, Jinotega, Leon, Rio San Juan
+        var markers = [
+            [12.136389, -86.251389],
+            [11.97444, -86.09417],
+            [11.9333296, -85.9499962],
+            [11.43716, -85.82632],
+            [12.47224, -85.6586],
+            [12.92559, -85.91747],
+            [12.0666664, -85.083333],
+            [13.7166638, -86.1333328],
+            [12.62937, -87.13105],
+            [13.0918503, -86.3538437],
+            [13.08881, -86.0010529],
+            [12.43787, -86.8780365],
+            [11.30583211, -84.691330568]
+        ];
+
+        var n = markers.length;
+
+        for (var i = 0; i < n; i++) {
+            marker = L.marker(markers[i]).addTo(myFeatureGroup);
+            marker.dep = i;
+        }
+
+        var map2 = null;
+
+        function groupClick(event) {
+
+            if (map2 !== undefined && map2 !== null) {
+                map2.remove();
+            }
+
+            map2 = L.map('content').setView(markers[event.layer.dep], 12);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map2);
+
+            setTimeout(function () {
+                map2.invalidateSize()
+            }, 800);
+
+            $("#myModal").modal("show");
+
+
+        }
+
+        //Inicializar el feature group
+        var editableLayers = new L.featureGroup();
+        map.addLayer(editableLayers);
+
+        var drawPluginOptions = {
+            position: 'topleft',
+            draw: {
+                rectangle: {
+                    allowIntersection: false, // Restricts shapes to simple polygons
+                    drawError: {
+                        color: '#e1e100', // Color the shape will turn when intersects
+                        message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+                    },
+                    shapeOptions: {
+                        color: '#97009c'
+                    }
+                },
+                polygon: {
+                    allowIntersection: false, // Restricts shapes to simple polygons
+                    drawError: {
+                        color: '#e1e100', // Color the shape will turn when intersects
+                        message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+                    },
+                    shapeOptions: {
+                        color: '#97009c'
+                    }
+                },
+                // disable toolbar item by setting it to false
+                polyline: false,
+                circle: false, // Turns off this drawing tool
+                marker: true,
+                circlemarker: false
+            },
+            edit: {
+                featureGroup: editableLayers, //REQUIRED!!
+                remove: true
+            }
+
+        };
+
+        var drawControl = new L.Control.Draw(drawPluginOptions);
+        map.addControl(drawControl);
+
+        map.on(L.Draw.Event.CREATED, function (e) {
+            var type = e.layerType,
+                layer = e.layer;
+
+            if (type === 'marker') {
+                layer.bindPopup('Here');
+            }
+            if (type === 'polygon') {
+                console.log(layer.getLatLngs());
+            }
+            if (type === 'rectangle') {
+                console.log(layer.getLatLngs());
+            }
+
+            editableLayers.addLayer(layer);
+        });
+
+    </script>
+
+    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
+        crossorigin="anonymous"></script>
+    <script>
+        feather.replace({ color: '#00463b' })
+    </script>
+
+</body>
+
+</html>
