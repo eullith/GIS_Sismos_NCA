@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,32 +12,24 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+    
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" 
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-        crossorigin="anonymous"></script>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
+            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-    <link href="./style.css" rel="stylesheet" />
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-
-    <title>Visor de Mapas</title>
+    <title>Práctica Leaflet</title>
 </head>
-
 <body>
 
     <style>
-        #map {
+        #map{
             width: 100%;
             height: 800px;
         }
 
-        #content {
+        #content{
             position: relative;
             overflow-y: auto;
             max-height: 400px;
@@ -47,16 +38,17 @@
             width: 1000px;
         }
 
-        .modal-dialog {
+        .modal-dialog{
             margin: 2.5vh auto;
         }
 
-        .modal-body {
+        .modal-body{
             position: relative;
             overflow-y: auto;
             max-height: 400px;
             padding: 15px;
         }
+
     </style>
 
     <div id="map">
@@ -64,9 +56,9 @@
     </div>
 
     <!-- Modal -->
-    <div id="myModal" class="modal fade" role="dialog">
+    <div id="myModal" class="modal fade" role="dialog"> 
         <div class="modal-dialog" style="display: table;">
-            <!-- Modal content-->
+        <!-- Modal content-->
             <div class="modal-content" style="display: table;">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -81,7 +73,7 @@
             </div>
         </div>
     </div>
-
+    
 
     <script src="js/leaflet.js"></script>
     <script src="js/leaflet.js.map"></script>
@@ -98,22 +90,22 @@
     <script>
 
         var map = L.map('map').setView([12.887, -85.40], 8);
-
+        
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
         //Definición de mapas base
         var terreno_osm = L.tileLayer.provider('Stamen.TerrainBackground', { maxZoom: 11 });
-        var osm_completo = L.tileLayer.provider('OpenStreetMap.Mapnik', { maxZoom: 11 });
-        var satelite_esri = L.tileLayer.provider('Esri.WorldImagery', { maxZoom: 11 });
+        var osm_completo = L.tileLayer.provider('OpenStreetMap.Mapnik', { maxZoom: 11});
+        var satelite_esri = L.tileLayer.provider('Esri.WorldImagery', { maxZoom: 11});
 
         //Definición de servicios
         var url = "http://localhost:8082/geoserver/ows?";
 
         //Capas
-        var coropleta = L.tileLayer.betterWms(url, { layers: 'b166:coropleta', transparent: true, visible: true, format: 'image/png', maxZoom: 14 });
-        var atm = L.tileLayer.betterWms(url, { layers: 'b166:atm', transparent: true, visible: true, format: 'image/png', maxZoom: 14 });
+        var coropleta = L.tileLayer.betterWms(url, {layers: 'b166:coropleta', transparent: true, visible: true, format: 'image/png', maxZoom: 14});
+        var atm = L.tileLayer.betterWms(url, {layers: 'b166:atm', transparent: true, visible: true, format: 'image/png', maxZoom: 14});
 
         //Lista de mapas base
         var baseLayers = [
@@ -121,60 +113,50 @@
                 group: "Mapas Base",
                 collapsed: true,
                 layers:
-                    [
-                        {
-                            name: "Completo (OSM)",
-                            layer: osm_completo
-                        },
-                        {
-                            name: "Satelite ESRI",
-                            layer: satelite_esri
-                        },
-                        {
-                            name: "Terreno (OSM)",
-                            layer: terreno_osm
-                        }
-                    ]
+                [
+                    {
+                        name: "Completo (OSM)",
+                        layer: osm_completo
+                    },
+                    {
+                        name: "Satelite ESRI",
+                        layer: satelite_esri
+                    },
+                    {
+                        name: "Terreno (OSM)",
+                        layer: terreno_osm
+                    }
+                ]
             }
         ];
 
         //Lista de capas
-        var overLayers =
-            [
-                {
-                    group: "Capas",
-                    collapsed: true,
-                    layers:
-                        [
-                            {
-                                name: "Censo Masculino",
-                                layer: coropleta
-                            },
-                            {
-                                name: "ATM",
-                                layer: atm
-                            }
-                        ]
-                }
-            ];
-
-        var panelLayers = new L.Control.PanelLayers(baseLayers, overLayers,
+        var overLayers = 
+        [
             {
-                collapsibleGroups: true,
-                collapsed: true
-            });
-
-        map.addControl(panelLayers);
-
-        //Busqueda
-        var controlSearch = new.L.Control.Search({
-            position: 'bottomright',
-            layer: markerLayer,
-            
-            marker: false
+                group: "Capas",
+                collapsed: true,
+                layers:
+                [
+                    {
+                        name: "Censo Masculino",
+                        layer: coropleta
+                    },
+                    {
+                        name: "ATM",
+                        layer: atm
+                    }
+                ]
+            }
+        ];
+    
+        var panelLayers = new L.Control.PanelLayers(baseLayers, overLayers, 
+        {
+            collapsibleGroups: true,
+            collapsed: true
         });
 
-        map.addControl(controlSearch);
+        map.addControl(panelLayers);
 
         //Definición de markers
         var myFeatureGroup = L.featureGroup().addTo(map).on("click", groupClick);
@@ -200,32 +182,33 @@
 
         var n = markers.length;
 
-        for (var i = 0; i < n; i++) {
+        for(var i = 0; i < n; i++)
+        {
             marker = L.marker(markers[i]).addTo(myFeatureGroup);
             marker.dep = i;
         }
 
         var map2 = null;
 
-        function groupClick(event) {
-
-            if (map2 !== undefined && map2 !== null) {
+        function groupClick(event){
+            
+            if(map2 !== undefined && map2 !== null){
                 map2.remove();
             }
 
             map2 = L.map('content').setView(markers[event.layer.dep], 12);
-
+            
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map2);
 
-            setTimeout(function () {
+            setTimeout(function(){
                 map2.invalidateSize()
             }, 800);
 
             $("#myModal").modal("show");
 
-
+            
         }
 
         //Inicializar el feature group
@@ -233,74 +216,62 @@
         map.addLayer(editableLayers);
 
         var drawPluginOptions = {
-            position: 'topleft',
-            draw: {
-                rectangle: {
-                    allowIntersection: false, // Restricts shapes to simple polygons
-                    drawError: {
-                        color: '#e1e100', // Color the shape will turn when intersects
-                        message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
-                    },
-                    shapeOptions: {
-                        color: '#97009c'
-                    }
+        position: 'topleft',
+        draw: {
+            rectangle: {
+                allowIntersection: false, // Restricts shapes to simple polygons
+                drawError: {
+                    color: '#e1e100', // Color the shape will turn when intersects
+                    message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
                 },
-                polygon: {
-                    allowIntersection: false, // Restricts shapes to simple polygons
-                    drawError: {
-                        color: '#e1e100', // Color the shape will turn when intersects
-                        message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
-                    },
-                    shapeOptions: {
-                        color: '#97009c'
-                    }
-                },
-                // disable toolbar item by setting it to false
-                polyline: false,
-                circle: false, // Turns off this drawing tool
-                marker: true,
-                circlemarker: false
+                shapeOptions: {
+                    color: '#97009c'
+                }
             },
-            edit: {
-                featureGroup: editableLayers, //REQUIRED!!
-                remove: true
-            }
+            polygon: {
+                allowIntersection: false, // Restricts shapes to simple polygons
+                drawError: {
+                    color: '#e1e100', // Color the shape will turn when intersects
+                    message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+                },
+                shapeOptions: {
+                    color: '#97009c'
+                }
+            },
+            // disable toolbar item by setting it to false
+            polyline: false,
+            circle: false, // Turns off this drawing tool
+            marker: true,
+            circlemarker: false
+        },
+        edit: {
+            featureGroup: editableLayers, //REQUIRED!!
+            remove: true
+        }
+        
+    };
 
-        };
+    var drawControl = new L.Control.Draw(drawPluginOptions);
+    map.addControl(drawControl);
 
-        var drawControl = new L.Control.Draw(drawPluginOptions);
-        map.addControl(drawControl);
+    map.on(L.Draw.Event.CREATED, function(e){
+        var type = e.layerType,
+        layer = e.layer;
 
-        map.on(L.Draw.Event.CREATED, function (e) {
-            var type = e.layerType,
-                layer = e.layer;
+        if(type === 'marker'){
+            layer.bindPopup('Here');
+        }
+        if(type === 'polygon'){
+            console.log(layer.getLatLngs());
+        }
+        if(type === 'rectangle'){
+            console.log(layer.getLatLngs());
+        }
 
-            if (type === 'marker') {
-                layer.bindPopup('Here');
-            }
-            if (type === 'polygon') {
-                console.log(layer.getLatLngs());
-            }
-            if (type === 'rectangle') {
-                console.log(layer.getLatLngs());
-            }
-
-            editableLayers.addLayer(layer);
-        });
-
-    </script>
-
-    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
-        crossorigin="anonymous"></script>
-    <script>
-        feather.replace({ color: '#00463b' })
+        editableLayers.addLayer(layer);
+    });
+            
     </script>
 
 </body>
-
 </html>
