@@ -183,7 +183,7 @@
         //Side Panel
         var panelLayers = new L.Control.PanelLayers(baseLayers, overLayers,
             {
-
+                collapsibleGroups: true
             });
 
         map.addControl(panelLayers);
@@ -275,16 +275,8 @@
 
         map.addLayer(markerClusters)
 
-        //Map print
-        $('print.map').click(function () {
-            window.print();
-        });
 
-        //Leaflet print in map function
-        L.control.browserPrint().addTo(map);
-
-
-        //Inicializar el feature group
+        //Drawer Editing Tools
         var editableLayers = new L.featureGroup();
         map.addLayer(editableLayers);
 
