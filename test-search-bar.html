@@ -1,0 +1,386 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.0/dist/leaflet.css" />
+    <link rel="stylesheet" href="./css/leaflet-search.css" />
+    <link rel="stylesheet" href="./css/style.css" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+    <!--Leaflet-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.0/dist/leaflet.css" />
+    <link rel="stylesheet" href="css/leaflet.css">
+    <link rel="stylesheet" href="css/leaflet-panel-layers.min.css">
+    <link rel="stylesheet" href="css/leaflet.groupedlayercontrol.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+
+    <!-- Panel Layers -->
+    <link rel="stylesheet" href="css/leaflet-panel-layers.css" />
+
+    <!-- ol3-layerswitcher -->
+    <link rel="stylesheet" href="ol-layerswitcher-master/src/ol-layerswitcher.css" type="text/css" />
+    <script src="ol-layerswitcher-master/dist/ol-layerswitcher.js"></script>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark olive">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Geoportal Sismos NCA
+            </a>
+        </div>
+    </nav>
+
+    <div id="map"></div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog" style="display: table;">
+            <!-- Modal content-->
+            <div class="modal-content" style="display: table;">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div id="content" class="modal-body">
+                    <!-- Mapa -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/leaflet.js"></script>
+    <script src="js/leaflet.js.map"></script>
+    <script src="js/leaflet-src.esm.js"></script>
+    <script src="js/leaflet-src.esm.js.map"></script>
+    <script src="js/leaflet-src.js"></script>
+    <script src="js/leaflet-src.js.map"></script>
+    <script src="js/leaflet-providers.js"></script>
+    <script src="js/L.TileLayer.BetterWMS.js"></script>
+    <script src="js/leaflet-panel-layers.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw-src.js"></script>
+    <script src="https://unpkg.com/jquery@3.3.1/dist/jquery.js"></script>
+    <script src="https://unpkg.com/leaflet@1.3.0/dist/leaflet.js"></script>
+    <script src="./js/Leaflet-control.js"></script>
+    <script src="./js/leaflet-search.js"></script>
+
+    <script>
+
+        //Definición de markers para funcion buscar
+        var data = [
+            { "loc": [12.136389, -86.251389], "title": "managua" },
+            { "loc": [11.97444, -86.09417], "title": "masaya" },
+            { "loc": [11.9333296, -85.9499962], "title": "granada" },
+            { "loc": [11.43716, -85.82632], "title": "rivas" },
+            { "loc": [12.47224, -85.6586], "title": "boaco" },
+            { "loc": [12.92559, -85.91747], "title": "matagalpa" },
+            { "loc": [12.0666664, -85.083333], "title": "chontales" },
+            { "loc": [13.7166638, -86.1333328], "title": "nueva segovia" },
+            { "loc": [12.62937, -87.13105], "title": "chinandega" },
+            { "loc": [13.0918503, -86.3538437], "title": "esteli" },
+            { "loc": [13.08881, -86.0010529], "title": "jinotega" },
+            { "loc": [12.43787, -86.8780365], "title": "leon" },
+            { "loc": [11.30583211, -84.691330568], "title": "rio san juan" },
+            { "loc": [13.96072323963274, -83.8421630859375], "title": "raccn" },
+            { "loc": [12.356100099123633, -84.05639648437499], "title": "raccs" }
+        ];
+
+        var map = new L.Map('map', { zoom: 7, center: new L.latLng(data[0].loc) });	//set center from first location
+
+        map.addLayer(new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
+
+        var markersLayer = new L.LayerGroup();	//layer contain searched elements
+        map.addLayer(markersLayer);
+
+        //Search bar
+        var controlSearch = new L.Control.Search({ layer: markersLayer, initial: false, position: 'topright' });
+
+        map.addControl(controlSearch);
+
+        //Cargar mapa con marcadores con datos ingresados
+        for (i in data) {
+            var title = data[i].title,	//value searched
+                loc = data[i].loc,		//position found
+                marker = new L.Marker(new L.latLng(loc), { title: title });//se property searched
+            marker.bindPopup('title: ' + title);
+            markersLayer.addLayer(marker);
+        }
+
+        $('#textsearch').on('keyup', function (e) {
+
+            controlSearch.searchText(e.target.value);
+
+        })
+
+        //Definición de mapas base
+        var terreno_osm = L.tileLayer.provider('Stamen.TerrainBackground', { maxZoom: 11 });
+        var osm_completo = L.tileLayer.provider('OpenStreetMap.Mapnik', { maxZoom: 11 });
+        var satelite_esri = L.tileLayer.provider('Esri.WorldImagery', { maxZoom: 11 });
+
+        //Lista de mapas base
+        var baseLayers = [
+            {
+                group: "Mapas Base",
+                collapsed: false,
+                layers:
+                    [
+                        {
+                            name: "Completo (OSM)",
+                            layer: osm_completo
+                        },
+                        {
+                            name: "Satelite ESRI",
+                            layer: satelite_esri
+                        },
+                        {
+                            name: "Terreno (OSM)",
+                            layer: terreno_osm
+                        }
+                    ]
+            }
+        ];
+
+        //Definición de servicios
+        var url = "http://localhost:8082/geoserver/ows?";
+
+        //Capas
+        var max_mag_2015 = L.tileLayer.betterWms(url, { layers: 'gis:max_mag_2015', transparent: true, visible: true, format: 'image/png', maxZoom: 14 });
+        var max_mag_2016 = L.tileLayer.betterWms(url, { layers: 'gis:max_mag_2015', transparent: true, visible: true, format: 'image/png', maxZoom: 14 });
+        var max_mag_2017 = L.tileLayer.betterWms(url, { layers: 'gis:max_mag_2015', transparent: true, visible: true, format: 'image/png', maxZoom: 14 });
+        var max_mag_2018 = L.tileLayer.betterWms(url, { layers: 'gis:max_mag_2015', transparent: true, visible: true, format: 'image/png', maxZoom: 14 });
+        var max_mag_2019 = L.tileLayer.betterWms(url, { layers: 'gis:max_mag_2015', transparent: true, visible: true, format: 'image/png', maxZoom: 14 });
+        var max_mag_2020 = L.tileLayer.betterWms(url, { layers: 'gis:max_mag_2015', transparent: true, visible: true, format: 'image/png', maxZoom: 14 });
+        var max_mag_2021 = L.tileLayer.betterWms(url, { layers: 'gis:max_mag_2015', transparent: true, visible: true, format: 'image/png', maxZoom: 14 });
+
+        //Lista de capas
+        var overLayers =
+            [
+                {
+                    group: "Capas",
+                    collapsed: false,
+                    layers:
+                        [
+                            {
+                                name: "Sismos 2015",
+                                layer: max_mag_2015
+                            },
+                            {
+                                name: "Sismos 2016",
+                                layer: max_mag_2016
+                            },
+                            {
+                                name: "Sismos 2017",
+                                layer: max_mag_2017
+                            },
+                            {
+                                name: "Sismos 2018",
+                                layer: max_mag_2018
+                            },
+                            {
+                                name: "Sismos 2019",
+                                layer: max_mag_2019
+                            },
+                            {
+                                name: "Sismos 2020",
+                                layer: max_mag_2020
+                            },
+                            {
+                                name: "Sismos 2021",
+                                layer: max_mag_2021
+                            }
+                        ]
+                }
+            ];
+
+        //Side Panel
+
+        var map = L.map('map', {
+            zoom: 12,
+            center: L.latLng([42.4918, 12.4992]),
+            attributionControl: false,
+            maxBounds: L.latLngBounds([[42.41281, 12.28821], [42.5589, 12.63805]]).pad(0.5)
+        }),
+            osmLayer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+
+        map.addLayer(osmLayer);
+
+        var baseLayers = [
+            {
+                name: "Open Street Map",
+                layer: osmLayer
+            },
+            {
+                name: "Hiking",
+                layer: L.tileLayer("http://toolserver.org/tiles/hikebike/{z}/{x}/{y}.png")
+            },
+            {
+                name: "Aerial",
+                layer: L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.{ext}', {
+                    type: 'sat',
+                    ext: 'jpg',
+                    attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency',
+                    subdomains: '1234'
+                })
+            },
+            {
+                group: "Road Layers",
+                collapsed: true,
+                layers: [
+                    {
+                        name: "Open Cycle Map",
+                        layer: L.tileLayer('http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png')
+                    },
+                    {
+                        name: "Transports",
+                        layer: L.tileLayer('http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png')
+                    }
+                ]
+            }
+        ];
+
+        var overLayers = [
+            {
+                group: "GeoJSON Layers",
+                layers: [
+                    {
+                        active: true,
+                        name: "Drinking Water",
+                        icon: '<i class="icon icon-drinking_water"></i>',
+                        layer: L.geoJson(Drinking_water)
+                    },
+                    {
+                        active: true,
+                        name: "River",
+                        layer: (function () {
+                            var l = L.geoJson();
+                            $.getJSON('data/river.json', function (j) {
+                                l.addData(j);
+                            });
+                            return l;
+                        }())
+                    },
+                ]
+            },
+            {
+                group: "WMS Layers",
+                layers: [
+                    {
+                        active: true,
+                        name: "Isolines",
+                        layer: {
+                            type: "tileLayer.wms",
+                            args: ["https://siat.regione.umbria.it/arcgis/services/public/DBT_05_Orografia/MapServer/WMSServer", {
+                                layers: '13',
+                                format: 'image/png',
+                                transparent: true,
+                                //minZoom: 13
+                            }
+                            ]
+                        }
+                    },
+                    {
+                        active: true,
+                        name: "Streams",
+                        layer: {
+                            type: "tileLayer.wms",
+                            args: ["https://siat.regione.umbria.it/arcgis/services/public/DBT_04_Idrografia/MapServer/WMSServer", {
+                                layers: '6',
+                                format: 'image/png',
+                                transparent: true,
+                            }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ];
+
+        var panelLayers = new L.Control.PanelLayers(baseLayers, overLayers, {
+            //compact: true,
+            //collapsed: true,
+            collapsibleGroups: true
+        });
+
+        map.addControl(panelLayers);
+
+        //Drawer Editing Tools
+        var editableLayers = new L.featureGroup();
+        map.addLayer(editableLayers);
+
+        var drawPluginOptions = {
+            position: 'topleft',
+            draw: {
+                rectangle: {
+                    allowIntersection: false, // Restricts shapes to simple polygons
+                    drawError: {
+                        color: '#e1e100', // Color the shape will turn when intersects
+                        message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+                    },
+                    shapeOptions: {
+                        color: '#97009c'
+                    }
+                },
+                polygon: {
+                    allowIntersection: false, // Restricts shapes to simple polygons
+                    drawError: {
+                        color: '#e1e100', // Color the shape will turn when intersects
+                        message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+                    },
+                    shapeOptions: {
+                        color: '#97009c'
+                    }
+                },
+                // disable toolbar item by setting it to false
+                polyline: false,
+                circle: false, // Turns off this drawing tool
+                marker: true,
+                circlemarker: false
+            },
+            edit: {
+                featureGroup: editableLayers, //REQUIRED!!
+                remove: true
+            }
+
+        };
+
+        var drawControl = new L.Control.Draw(drawPluginOptions);
+        map.addControl(drawControl);
+
+        map.on(L.Draw.Event.CREATED, function (e) {
+            var type = e.layerType,
+                layer = e.layer;
+
+            if (type === 'marker') {
+                layer.bindPopup('Here');
+            }
+            if (type === 'polygon') {
+                console.log(layer.getLatLngs());
+            }
+            if (type === 'rectangle') {
+                console.log(layer.getLatLngs());
+            }
+
+            editableLayers.addLayer(layer);
+        });
+
+
+    </script>
+
+    <script type="text/javascript" src="/labs-common.js"></script>
+
+</body>
+
+</html>
