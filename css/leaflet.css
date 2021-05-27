@@ -749,3 +749,11 @@ svg.leaflet-image-layer.leaflet-interactive path {
 	  background-color: var(--layer);
 	  outline-width: 0px;
   }
+
+  .nav-vis{
+	  color: white;
+  }
+
+  .nav-vis:hover{
+	  color: white;
+  }
