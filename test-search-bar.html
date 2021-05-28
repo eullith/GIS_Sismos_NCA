@@ -19,11 +19,11 @@
         crossorigin="anonymous"></script>
 
     <!--Leaflet-->
-    <!--<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.0/dist/leaflet.css" />-->
     <link rel="stylesheet" href="css/leaflet.css">
     <link rel="stylesheet" href="css/leaflet-panel-layers.min.css">
     <link rel="stylesheet" href="css/leaflet.groupedlayercontrol.min.css">
 
+    <!--Draw-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
 
     <!-- Panel Layers -->
@@ -62,6 +62,10 @@
             max-height: 400px;
             padding: 15px;
         }
+
+        .sr-only {
+            display: none;
+        }
     </style>
 
     <nav class="navbar navbar-expand-lg navbar-dark olive">
@@ -91,6 +95,7 @@
             </div>
         </div>
     </div>
+
 
     <script src="js/leaflet.js"></script>
     <script src="js/leaflet.js.map"></script>
@@ -326,66 +331,53 @@
 
         map.addControl(panelLayers);
 
+        // 
+        var myFeatureGroup = L.featureGroup().addTo(map).addEventListener("click", groupClick);
+        var marker, dep;
+
+        var n = data.length;
+
+        for (var i = 0; i < n; i++) {
+            marker = L.marker(data[i]).addTo(myFeatureGroup);
+            marker.dep = i;
+        }
+
+        var map2 = null;
+
+        function groupClick(event) {
+
+            if (map2 !== undefined && map2 !== null) {
+                map2.remove();
+            }
+
+            map2 = L.map('content').setView(data[event.layer.dep], 12);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map2);
+
+            setTimeout(function () {
+                map2.invalidateSize()
+            }, 800);
+
+            $("#myModal").modal("show");
+        }
+
         //Drawer Editing Tools
-        var editableLayers = new L.featureGroup();
-        map.addLayer(editableLayers);
+        var map3 = L.map('map', { drawControl: true }).setView([51.505, -0.09], 13);
+        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-        var drawPluginOptions = {
-            position: 'topleft',
-            draw: {
-                rectangle: {
-                    allowIntersection: false, // Restricts shapes to simple polygons
-                    drawError: {
-                        color: '#e1e100', // Color the shape will turn when intersects
-                        message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
-                    },
-                    shapeOptions: {
-                        color: '#97009c'
-                    }
-                },
-                polygon: {
-                    allowIntersection: false, // Restricts shapes to simple polygons
-                    drawError: {
-                        color: '#e1e100', // Color the shape will turn when intersects
-                        message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
-                    },
-                    shapeOptions: {
-                        color: '#97009c'
-                    }
-                },
-                // disable toolbar item by setting it to false
-                polyline: false,
-                circle: false, // Turns off this drawing tool
-                marker: true,
-                circlemarker: false
-            },
+        // FeatureGroup is to store editable layers
+        var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+        var drawControl = new L.Control.Draw({
             edit: {
-                featureGroup: editableLayers, //REQUIRED!!
-                remove: true
+                featureGroup: drawnItems
             }
-
-        };
-
-        var drawControl = new L.Control.Draw(drawPluginOptions);
-        map.addControl(drawControl);
-
-        map.on(L.Draw.Event.CREATED, function (e) {
-            var type = e.layerType,
-                layer = e.layer;
-
-            if (type === 'marker') {
-                layer.bindPopup('Here');
-            }
-            if (type === 'polygon') {
-                console.log(layer.getLatLngs());
-            }
-            if (type === 'rectangle') {
-                console.log(layer.getLatLngs());
-            }
-
-            editableLayers.addLayer(layer);
         });
-
+        map.addControl(drawControl);
 
     </script>
 
